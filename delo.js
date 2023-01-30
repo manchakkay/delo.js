@@ -396,19 +396,17 @@ function DELO$$SCROLL_Rotate_Handle(force) {
                 DELO$$SCROLL_Rotate_Init();
             }
 
-            
+
         }
     }
 }
 
-if (Element.prototype.getBoundingClientRect) {
-    const DefaultGetBoundingClientRect = Element.prototype.getBoundingClientRect;
-    
-    Element.prototype.getBoundingClientRect = function () {
-      let zoom = +window.getComputedStyle(this.closest(".t396__elem")).zoom;
-      let data = DefaultGetBoundingClientRect.apply(this, arguments);
-  
-      if (zoom !== 1) {
+function getBoundingClientRectZoom(obj) {
+    let zoom = +window.getComputedStyle(obj.closest(".t396__elem")).zoom;
+    if (!zoom) { zoom = 1; }
+    var data = obj.getBoundingClientRect();
+
+    if (zoom !== 1) {
         data.x = data.x * zoom;
         data.y = data.y * zoom;
         data.top = data.top * zoom;
@@ -417,14 +415,14 @@ if (Element.prototype.getBoundingClientRect) {
         data.bottom = data.bottom * zoom;
         data.width = data.width * zoom;
         data.height = data.height * zoom;
-      }
-  
-      return data;
-    };
+    }
+
+    return data;
 }
 
+
 function DELO$$SCROLL_Rotate_HandleTransform(data) {
-    var rect = data.object.element.getBoundingClientRect();
+    var rect = getBoundingClientRectZoom(data.object.element);
     rect.height = rect.bottom - rect.top;
     if (
         (rect.top <= DELO$$SCROLL_Rotate_Global.viewport.height + data.bias && rect.top >= 0 - data.bias) ||
